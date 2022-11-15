@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fedex.intellisense.exception.DatabaseException;
 import com.fedex.intellisense.exception.IncidentNotFoundException;
 import com.fedex.intellisense.exception.IssueNotFoundException;
+import com.fedex.intellisense.exception.VehicleNotFoundException;
 import com.fedex.intellisense.model.EmployeeVO;
 import com.fedex.intellisense.model.IncidentVO;
 import com.fedex.intellisense.model.IssueVO;
+import com.fedex.intellisense.model.VehicleVO;
 import com.fedex.intellisense.service.IntellisenseService;
 
 
@@ -54,7 +56,7 @@ public class IntellisenseController {
         return new ResponseEntity<>(intellisenseService.addIncident(incident) , HttpStatus.CREATED);
     }
 	
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value="/issue", method = RequestMethod.GET)
     public List<IssueVO> getIssues() throws IssueNotFoundException , DatabaseException {
         
         log.info("IntellisenseController::getIssues()");
@@ -73,5 +75,19 @@ public class IntellisenseController {
         
         log.info("IntellisenseController::addEmployee()");
         return new ResponseEntity<>(intellisenseService.addEmployee(employeeVO) , HttpStatus.CREATED);
+    }
+	
+	@RequestMapping(value="/vehicle", method = RequestMethod.GET)
+    public List<VehicleVO> getVehicle() throws VehicleNotFoundException , DatabaseException {
+        
+        log.info("IntellisenseController::getVehicle()");
+        return intellisenseService.getVehicle();
+    }
+	
+	@RequestMapping( value="/addVehicle", method = RequestMethod.POST)
+    public ResponseEntity<String> addVehicle(@RequestBody VehicleVO vehicleVO) throws DatabaseException {
+        
+        log.info("IntellisenseController::addVehicle()");
+        return new ResponseEntity<>(intellisenseService.addVehicle(vehicleVO) , HttpStatus.CREATED);
     }
 }

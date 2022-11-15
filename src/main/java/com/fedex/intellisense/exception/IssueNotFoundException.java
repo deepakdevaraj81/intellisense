@@ -6,10 +6,10 @@ package com.fedex.intellisense.exception;
 public class IssueNotFoundException extends Exception {
 	
 	public IssueNotFoundException(Long productId) {
-        super("Incident Not Found Exception : " + productId);
+        super("Issue Not Found Exception : " + productId);
     }
 	public IssueNotFoundException(String status) {
-        super("Incident Not Found Exception : " + status);
+        super("Issue Not Found Exception : " + status);
     }
 
 }

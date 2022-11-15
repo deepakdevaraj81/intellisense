@@ -13,9 +13,11 @@ import org.springframework.util.CollectionUtils;
 
 import com.fedex.intellisense.entity.Incident;
 import com.fedex.intellisense.entity.Issue;
+import com.fedex.intellisense.entity.Vehicle;
 import com.fedex.intellisense.entity.Employee;
 import com.fedex.intellisense.model.IncidentVO;
 import com.fedex.intellisense.model.IssueVO;
+import com.fedex.intellisense.model.VehicleVO;
 import com.fedex.intellisense.model.EmployeeVO;
 import com.fedex.intellisense.repository.IssueRepository;
 import com.fedex.intellisense.service.IntellisenseService;
@@ -95,6 +97,17 @@ public class IntellisenseAdapter {
 		return issue;
 	}
 	
+	public Vehicle convertVehicleVOModelToEntity(VehicleVO vehicleVO) {
+		log.info("IntellisenseAdapter::convertVehicleVOModelToEntity()");
+		Vehicle vehicle = null;
+		if(vehicleVO!=null) {
+			vehicle = new Vehicle();
+			vehicle.setVehicleNumber(vehicleVO.getVehicleNumber());
+			vehicle.setOdometerType(vehicleVO.getOdometerType());
+		}
+		return vehicle;
+	}
+	
 	public Employee convertEmployeeVOModelToEntity(EmployeeVO employeeVO) {
 		log.info("IntellisenseAdapter::convertIssueVOModelToEntity()");
 		Employee employee = null;
@@ -123,6 +136,20 @@ public class IntellisenseAdapter {
 			}
 		}	
 		return issueVOList;
+	}
+	public List<VehicleVO> convertVehicleListToVehicleVOList(List<Vehicle> vehicleList) {
+		log.info("IntellisenseAdapter::convertIssueListToIssueVOList()");
+		List<VehicleVO> vehicleVOList = new ArrayList<VehicleVO>();
+		if(!CollectionUtils.isEmpty(vehicleList)) {
+			for(Vehicle vehicle:vehicleList) {
+				VehicleVO vehicleVO = new VehicleVO();
+				vehicleVO.setVehicleId(vehicle.getVehicleId());
+				vehicleVO.setVehicleNumber(vehicle.getVehicleNumber());
+				vehicleVO.setOdometerType(vehicle.getOdometerType());
+				vehicleVOList.add(vehicleVO);
+			}
+		}	
+		return vehicleVOList;
 	}
 	
 

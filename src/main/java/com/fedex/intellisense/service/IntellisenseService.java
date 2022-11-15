@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -14,17 +15,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.fedex.intellisense.adapter.IntellisenseAdapter;
 import com.fedex.intellisense.model.IssueVO;
+import com.fedex.intellisense.model.VehicleVO;
 import com.fedex.intellisense.entity.Employee;
 import com.fedex.intellisense.entity.Incident;
 import com.fedex.intellisense.entity.Issue;
+import com.fedex.intellisense.entity.Vehicle;
 import com.fedex.intellisense.exception.DatabaseException;
 import com.fedex.intellisense.exception.IncidentNotFoundException;
 import com.fedex.intellisense.exception.IssueNotFoundException;
 import com.fedex.intellisense.exception.UserNotFoundException;
+import com.fedex.intellisense.exception.VehicleNotFoundException;
 import com.fedex.intellisense.model.EmployeeVO;
 import com.fedex.intellisense.model.IncidentVO;
 import com.fedex.intellisense.repository.IncidentRepository;
 import com.fedex.intellisense.repository.IssueRepository;
+import com.fedex.intellisense.repository.VehicleRepository;
 import com.fedex.intellisense.repository.EmployeeRepository;
 
 @Service
@@ -41,6 +46,9 @@ public class IntellisenseService {
 	
 	@Autowired
 	IntellisenseAdapter intellisenseAdapter;
+	
+	@Autowired
+	VehicleRepository vehicleRepository;
 	
 	Logger log = LogManager.getLogger(IntellisenseService.class);
 	
@@ -129,6 +137,39 @@ public class IntellisenseService {
     	 }
          
     	 return employeeVO;
+    }
+	
+	public List<VehicleVO> getVehicle() throws VehicleNotFoundException , DatabaseException {
+	        
+	     log.info("IntellisenseService::getVehicle()");
+	     
+	     List<Vehicle> vehicleList = null;
+	     try {
+	    	 vehicleList = vehicleRepository.getVehicle();
+	     } catch(Exception e) {
+			throw new DatabaseException("Exception occurred during Get Issues");
+		 }		
+	     if(CollectionUtils.isEmpty(vehicleList)) {
+	    	 throw new VehicleNotFoundException("No Vehicle Found");
+		 } 
+	     List<VehicleVO> vehicleVOList = intellisenseAdapter.convertVehicleListToVehicleVOList(vehicleList);
+	     return vehicleVOList;
+	     
+	}
+		
+    public String addVehicle( VehicleVO vehicleVO) throws DatabaseException {
+	        
+	     log.info("IntellisenseService::addVehicle()");
+	 	
+	     Vehicle vehicle = intellisenseAdapter.convertVehicleVOModelToEntity(vehicleVO);
+	     try {
+	    	 vehicleRepository.save(vehicle);
+	       	return "Vehicle Saved Successfully";
+	     } catch(Exception e) {
+	        throw new DatabaseException("Exception occurred during Save Vehicle");
+		 }	
+	     
+	     
     }
 }
 
